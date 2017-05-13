@@ -20,21 +20,30 @@ pool_X = None
 
 FUNC_TIMES = 0
 
+#适应度
 FITNESS = None
 
+#锦标赛规模
 FIGHT_N = 2
 
-def _find_best():
+
+def _find_best_competetor():
+    """
+    锦标赛选择算法
+    选择最优个体的下标
+    """
     indices = []
     best_id = 0
     best = 0
+    # 随机选取FIGHT_N个个体
     for i in xrange(FIGHT_N):
         indices.append( random.randint(0,POP-1) )
     best = FITNESS[0][indices[0]]
-    for id in xrange(POP-1):
-        if FITNESS[0][id] < best
-            best_id = id+1
+    for id in indices:
+        if FITNESS[0][id] < best:
+            best_id = id
             best = FITNESS[0][id]
+    return best_id
 
 def init():
     old_X = LOWER + np.random.rand(POP, VARS) * (UPPER - LOWER)
@@ -46,3 +55,4 @@ def evaluate():
 
 def select():
     for i in xrange(POP):
+        pass
