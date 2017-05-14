@@ -43,7 +43,7 @@ def _find_by_wheel():
     for fit in gaconf.FITNESS[0]:
         prob_cmp = 1.0*fit/fit_all
         wheel[id] = pre + prob_cmp
-        print(wheel)
+        #print(wheel)
         pre = wheel[id]
         #if prob <= fit_prob[id]:
         #    return id
@@ -54,21 +54,25 @@ def _find_by_wheel():
     """
     for i in xrange(gaconf.POP):
         prob = random.random()
+        selected = 0
         for id in xrange(gaconf.POP):
             if prob <= wheel[id]:
-                print ('选中个体:%d'%id)
+                #print ('选中个体:%d, 该个体适应度为:%f'%(id,gaconf.FITNESS[0,id]))
+                selected = id
                 break
+        gaconf.new_X[i,:] = gaconf.old_X[selected,:]
+
 
 
 
 def init():
     #global LOWER,POP,UPPER,FITNESS,old_X,new_X
-    old_X = gaconf.LOWER + np.random.rand(gaconf.POP, gaconf.VARS) * (gaconf.UPPER - gaconf.LOWER)
+    gaconf.old_X = gaconf.LOWER + np.random.rand(gaconf.POP, gaconf.VARS) * (gaconf.UPPER - gaconf.LOWER)
     gaconf.FITNESS = np.ones([1,gaconf.POP])
-    new_X = old_X.copy()
+    gaconf.new_X = gaconf.old_X.copy()
 def evaluate():
     for pop in xrange(gaconf.POP):
-        gaconf.FITNESS[0][pop] = Funcs.Sphere(gaconf.new_X[pop,:])
+        gaconf.FITNESS[0,pop] = Funcs.Sphere_Fitness(gaconf.new_X[pop,:])
 
 
 def select_std():
@@ -76,16 +80,53 @@ def select_std():
     轮盘赌选择
     :return:
     """
-    #计算总适应度
+    _find_by_wheel()
 
 
+def cross():
+    """
+    遗传算法的交叉操作,每次选择两个个体进行交叉
+    :return:
+    """
     for i in xrange(gaconf.POP):
-        pass
+        #满足交叉概率
+        if random.random()  < gaconf.CP:
+            [m,n] = np.random.random(2) * gaconf.POP
+            m = int(m)
+            n = int(n)
+            gaconf.new_X[i,:] = (gaconf.old_X[m,:] + gaconf.old_X[n,:])/2
+        else:
+            gaconf.new_X[i,:] = gaconf.old_X[i,:]
 
+def mutate():
+    """
+    遗传算法变异操作
+    :return:
+    """
+    for i in xrange(gaconf.POP):
+        if random.random() < gaconf.MP:
+            gaconf.new_X[i,:] = gaconf.LOWER + (gaconf.UPPER - gaconf.LOWER)*random.random()
+
+def out_best():
+    best_fit = gaconf.FITNESS[0,0]
+    best  = 0
+    sz = len(gaconf.FITNESS[0,:])
+    for i in xrange(sz):
+        if best_fit < gaconf.FITNESS[0,i]:
+            best_fit = gaconf.FITNESS[0,i]
+            best = i
+
+    #print ("Best Fit: %f"%best_fit)
+    #print ("Best IND:",gaconf.new_X[best,:])
 
 
 if __name__ == '__main__':
     init()
-    ga = gaconf.FITNESS
-
-    _find_by_wheel()
+    max_iter = 1000
+    for i in xrange( max_iter ):
+        cross()
+        mutate()
+        evaluate()
+        select_std()
+        out_best()
+        print ("************************************")
