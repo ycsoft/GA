@@ -6,7 +6,11 @@ def Sphere(X):
     :return:
     """
     ret = 0
-    (row,col) = X.shape
-    for i in xrange(col):
-        ret += X[0][i] ** 2
-    return  ret
+    for v in X:
+        ret += v**2
+    return ret
+
+def Sphere_Fitness(X):
+    func = Sphere(X)
+    fit = 1.0/func
+    return fit
