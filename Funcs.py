@@ -12,5 +12,5 @@ def Sphere(X):
 
 def Sphere_Fitness(X):
     func = Sphere(X)
-    fit = 1.0/func
+    fit = 100.0/func
     return fit
