@@ -1,10 +1,10 @@
 #coding:utf-8
 
 
-POP = 10     #种群规模
-CP = 0.6     #交叉概率
-VARS = 5     #优化变量个数
-MP = 0.1
+POP = 40     #种群规模
+CP = 0.7     #交叉概率
+VARS = 3     #优化变量个数
+MP = 0.2
 
 LOWER = -5
 UPPER = 5
