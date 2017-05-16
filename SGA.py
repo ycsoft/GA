@@ -104,8 +104,29 @@ def select_std():
     """
     _find_by_wheel()
 
-
-def cross():
+def __three_cross():
+    """
+    三体交叉
+    :param pos:
+    :return:
+    """
+    for i in xrange(gaconf.POP):
+        #满足交叉概率
+        if random.random()  < gaconf.CP:
+            [m,n] = np.random.random(2) * gaconf.POP
+            m = int(m)
+            n = int(n)
+            #选择交叉点
+            pos = random.randint(0,gaconf.VARS-1)
+            gaconf.new_X[i, pos] =  gaconf.new_X[i,pos]*0.6  + 0.4 *(gaconf.old_X[m, pos] - gaconf.old_X[n, pos])
+            #for j in xrange(gaconf.VARS):
+            #    if random.random() < gaconf.CP:
+            #        gaconf.new_X[i, j] = gaconf.new_X[i, j] * 0.6 + 0.4 * (
+            #        gaconf.old_X[m, j] - gaconf.old_X[n, j])
+            #gaconf.new_X[i,:] = (gaconf.old_X[m,:] + gaconf.old_X[n,:])/2
+        else:
+            gaconf.new_X[i,:] = gaconf.old_X[i,:]
+def _std_cross():
     """
     遗传算法的交叉操作,每次选择两个个体进行交叉
     :return:
@@ -118,13 +139,14 @@ def cross():
             n = int(n)
             #选择交叉点
             pos = random.randint(0,gaconf.VARS-1)
-            gaconf.new_X[i, pos] =  gaconf.new_X[i,pos]*0.6  + 0.4 *(gaconf.old_X[m, pos] - gaconf.old_X[n, pos])
-            # for j in xrange(gaconf.VARS):
-            #     if random.random() < gaconf.CP:
-            #         gaconf.new_X[i,j] = (gaconf.old_X[m,j] + gaconf.old_X[n,j])/2
-            #gaconf.new_X[i,:] = (gaconf.old_X[m,:] + gaconf.old_X[n,:])/2
+
+            gaconf.new_X[i,pos] = (gaconf.old_X[m,pos] + gaconf.old_X[n,pos])/2
         else:
             gaconf.new_X[i,:] = gaconf.old_X[i,:]
+
+
+def cross():
+    _std_cross()
 
 def mutate():
     """
@@ -154,13 +176,17 @@ def out_best():
 
 if __name__ == '__main__':
     init()
-    max_iter = 500
+    max_iter = 50
     for i in xrange( max_iter ):
         cross()
         mutate()
         evaluate()
         select_std()
         out_best()
+    print(gaconf.new_X)
     l = len(history)
     plt.plot([x for x in xrange(l)],history)
+    plt.title("Std Cross")
+    plt.xlabel('Iteration')
+    plt.ylabel('Fitness')
     plt.show()
