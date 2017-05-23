@@ -10,6 +10,9 @@ import matplotlib.pyplot as plt
 wheel = None
 history = []
 
+
+#eval_func = Funcs.Ackley_Fitness
+eval_func = Funcs.Ackley_Fitness
 def _find_best_competetor():
     """
     锦标赛选择算法
@@ -79,7 +82,12 @@ def _find_by_wheel():
     #     print('Fit:%s , Times:%d'%(k,v))
 
 
-
+def get_random():
+    """
+    [-1,1]
+    :return:
+    """
+    return (random.random() - 0.5)
 
 
 def init():
@@ -94,7 +102,7 @@ def evaluate():
     :return:
     """
     for pop in xrange(gaconf.POP):
-        gaconf.FITNESS[0,pop] = Funcs.Sphere_Fitness(gaconf.new_X[pop,:])
+        gaconf.FITNESS[0,pop] = eval_func(gaconf.new_X[pop,:])
 
 
 def select_std():
@@ -113,12 +121,15 @@ def __three_cross():
     for i in xrange(gaconf.POP):
         #满足交叉概率
         if random.random()  < gaconf.CP:
-            [m,n] = np.random.random(2) * gaconf.POP
+            [m,n,h] = np.random.random(3) * gaconf.POP
             m = int(m)
             n = int(n)
+            h = int(h)
+            a = get_random()*0.4
+            b = get_random()*0.4
             #选择交叉点
             pos = random.randint(0,gaconf.VARS-1)
-            gaconf.new_X[i, pos] =  gaconf.new_X[i,pos]*0.6  + 0.4 *(gaconf.old_X[m, pos] - gaconf.old_X[n, pos])
+            gaconf.new_X[i, pos] =  gaconf.new_X[h,pos]*a  + b *(gaconf.old_X[m, pos] - gaconf.old_X[n, pos])
             #for j in xrange(gaconf.VARS):
             #    if random.random() < gaconf.CP:
             #        gaconf.new_X[i, j] = gaconf.new_X[i, j] * 0.6 + 0.4 * (
@@ -140,13 +151,16 @@ def _std_cross():
             #选择交叉点
             pos = random.randint(0,gaconf.VARS-1)
 
-            gaconf.new_X[i,pos] = (gaconf.old_X[m,pos] + gaconf.old_X[n,pos])/2
+            a = get_random()*0.4
+            b = get_random()*0.4
+            gaconf.new_X[i,pos] = a * gaconf.old_X[m,pos] + b * gaconf.old_X[n,pos]
         else:
             gaconf.new_X[i,:] = gaconf.old_X[i,:]
 
 
 def cross():
-    _std_cross()
+    #_std_cross()
+    __three_cross()
 
 def mutate():
     """
@@ -175,6 +189,7 @@ def out_best():
     history.append(best_fit)
 
 if __name__ == '__main__':
+
     init()
     max_iter = 50
     for i in xrange( max_iter ):
@@ -190,3 +205,4 @@ if __name__ == '__main__':
     plt.xlabel('Iteration')
     plt.ylabel('Fitness')
     plt.show()
+
