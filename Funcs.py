@@ -1,5 +1,9 @@
 #coding:utf-8
 import math
+import numpy as np
+from mpl_toolkits.mplot3d import Axes3D
+import matplotlib.pyplot as plt
+from matplotlib import cm
 
 def Sphere(X):
     """
@@ -16,6 +20,23 @@ def Sphere_Fitness(X):
     fit = 100.0/(func+1.0)
     return fit
 
+def draw_Sphere():
+    X = np.arange(-5,5,0.1)
+    [X,Y] = np.meshgrid(X,X)
+    Z = X**2 + Y**2
+    fig = plt.figure()
+    ax = fig.gca(projection='3d')
+
+    surf = ax.plot_surface(X,Y,Z,cmap=cm.YlGn,
+                       linewidth=0, antialiased=True,shade=True,rstride=1,cstride=1)
+    #ax.set_zlim(-1.01, 1.01)
+    #ax.zaxis.set_major_locator(LinearLocator(10))
+    #ax.zaxis.set_major_formatter(FormatStrFormatter('%.02f'))
+
+    #fig.colorbar(surf, shrink=0.5, aspect=1)
+    plt.show()
+
+
 
 def Ackley(X):
     x = X[0]
@@ -28,3 +49,6 @@ def Ackley_Fitness(X):
         func = 1.0e-10
     fit = 100.0/(func+1)
     return fit
+
+
+draw_Sphere()

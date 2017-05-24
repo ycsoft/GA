@@ -8,8 +8,6 @@ import logging
 import matplotlib.pyplot as plt
 
 wheel = None
-history = []
-
 
 #eval_func = Funcs.Ackley_Fitness
 eval_func = Funcs.Ackley_Fitness
@@ -23,7 +21,7 @@ def _find_best_competetor():
     best_id = 0
     best = 0
     # 随机选取FIGHT_N个个体
-    for i in xrange(gaconf.FIGHT_N):
+    for i in range(gaconf.FIGHT_N):
         indices.append( random.randint(0,gaconf.POP-1) )
     best = gaconf.FITNESS[0][indices[0]]
     for id in indices:
@@ -61,10 +59,10 @@ def _find_by_wheel():
     算法选择个体
     """
     #print(wheel)
-    for i in xrange(gaconf.POP):
+    for i in range(gaconf.POP):
         prob = random.random()
         selected = 0
-        for id in xrange(gaconf.POP):
+        for id in range(gaconf.POP):
             if prob <= wheel[id]:
                 key = str(gaconf.FITNESS[0,id])
                 #print ('选中个体:%d, 该个体适应度为:%f'%(id,gaconf.FITNESS[0,id]))
@@ -101,7 +99,7 @@ def evaluate():
     计算种群中个体的适应度
     :return:
     """
-    for pop in xrange(gaconf.POP):
+    for pop in range(gaconf.POP):
         gaconf.FITNESS[0,pop] = eval_func(gaconf.new_X[pop,:])
 
 
@@ -118,7 +116,7 @@ def __three_cross():
     :param pos:
     :return:
     """
-    for i in xrange(gaconf.POP):
+    for i in range(gaconf.POP):
         #满足交叉概率
         if random.random()  < gaconf.CP:
             [m,n,h] = np.random.random(3) * gaconf.POP
@@ -142,7 +140,7 @@ def _std_cross():
     遗传算法的交叉操作,每次选择两个个体进行交叉
     :return:
     """
-    for i in xrange(gaconf.POP):
+    for i in range(gaconf.POP):
         #满足交叉概率
         if random.random()  < gaconf.CP:
             [m,n] = np.random.random(2) * gaconf.POP
@@ -159,15 +157,15 @@ def _std_cross():
 
 
 def cross():
-    #_std_cross()
-    __three_cross()
+    _std_cross()
+    #__three_cross()
 
 def mutate():
     """
     遗传算法变异操作
     :return:
     """
-    for i in xrange(gaconf.POP):
+    for i in range(gaconf.POP):
         if random.random() < gaconf.MP:
             #选择变异位置
             pos = random.randint(0,gaconf.VARS-1)
@@ -178,29 +176,38 @@ def out_best():
     best_fit = gaconf.FITNESS[0,0]
     best  = 0
     sz = len(gaconf.FITNESS[0,:])
-    for i in xrange(sz):
+    for i in range(sz):
         if best_fit < gaconf.FITNESS[0,i]:
             best_fit = gaconf.FITNESS[0,i]
             best = i
-
     print ("Best Fit: %f"%best_fit)
+    return best_fit
+def save_best(file='hist.txt',tag='2cross'):
+    global history
+    f = open(file=file,mode='w')
+    f.write(tag + '\n')
+    f.write(str(history))
+    f.close()
 
-    #print ("Best IND:",gaconf.new_X[best,:])
-    history.append(best_fit)
+max_iter = 50
+history = np.zeros(max_iter)
 
-if __name__ == '__main__':
-
+def main():
+    global max_iter,history
     init()
-    max_iter = 50
-    for i in xrange( max_iter ):
+    for i in range( max_iter ):
         cross()
         mutate()
         evaluate()
         select_std()
-        out_best()
+        history[i] = history[i] + out_best()
+
+if __name__ == '__main__':
+    global max_iter,history
+
     print(gaconf.new_X)
     l = len(history)
-    plt.plot([x for x in xrange(l)],history)
+    plt.plot([x for x in range(l)],history)
     plt.title("Std Cross")
     plt.xlabel('Iteration')
     plt.ylabel('Fitness')

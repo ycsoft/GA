@@ -8,7 +8,7 @@ for line in f:
     y.append(line)
 sz = len(y)
 print(sz)
-x = [i+1 for i in xrange(sz)]
+x = [i+1 for i in range(sz)]
 print(x)
 print(y)
 plt.plot(x,y)

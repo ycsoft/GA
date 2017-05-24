@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/GA.iml" filepath="$PROJECT_DIR$/.idea/GA.iml" />
+      <module fileurl="file://E:\Workspace\Python\GA\.idea\GA.iml" filepath="E:\Workspace\Python\GA\.idea\GA.iml" />
     </modules>
   </component>
 </project>

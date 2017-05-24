@@ -20,3 +20,9 @@ FITNESS = None
 
 #锦标赛规模
 FIGHT_N = 2
+
+#迭代次数
+max_iter = 50
+
+#运行次数
+run_times = 10
